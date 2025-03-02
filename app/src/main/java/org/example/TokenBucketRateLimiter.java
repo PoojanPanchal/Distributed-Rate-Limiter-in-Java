@@ -1,6 +1,7 @@
-package io.redis;
+package org.example;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Transaction;
 
 /**
  * Token Bucket Rate Limiter
@@ -14,7 +15,7 @@ import redis.clients.jedis.Jedis;
 public class TokenBucketRateLimiter {
     private final Jedis jedis;
     private final int bucketCapacity;
-    private final int double refillRate;
+    private final double refillRate;
     
     // Constructor
     public TokenBucketRateLimiter(Jedis jedis, int bucketCapacity, int refillRate) {
@@ -42,8 +43,8 @@ public class TokenBucketRateLimiter {
 
         // Calculate the current time and last refill time
         long currentTime = System.currentTimeMillis();
-        long lastRefillTime = results.get(1) != null ? Long.parseLong((String) results.get(1)) : currentTime;
-        int tokenCount = results.get(0) != null ? Integer.parseInt((String) results.get(0)) : bucketCapacity;
+        long lastRefillTime = result.get(1) != null ? Long.parseLong((String) result.get(1)) : currentTime;
+        int tokenCount = result.get(0) != null ? Integer.parseInt((String) result.get(0)) : bucketCapacity;
 
         // Calculate the elapsed time and tokens to add        
         long elapsedTimeMs = currentTime - lastRefillTime;
@@ -53,7 +54,7 @@ public class TokenBucketRateLimiter {
         tokenCount = Math.min(tokenCount + tokensToAdd, bucketCapacity);
 
         // Check if the client is allowed to perform an action
-        boolean isAllowed = tokenCount > 0;
+        boolean isAllowed = tokenCount >= 1;
         if (isAllowed) {
             tokenCount--;
         }

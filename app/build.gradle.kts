@@ -21,6 +21,20 @@ dependencies {
 
     // This dependency is used by the application.
     implementation(libs.guava)
+    
+    // Redis dependency
+    implementation("redis.clients:jedis:5.1.0")
+    
+    // Mockito for testing
+    testImplementation("org.mockito:mockito-core:5.10.0")
+    
+    // TestContainers for integration testing
+    testImplementation("org.testcontainers:testcontainers:1.19.3")
+    testImplementation("org.testcontainers:junit-jupiter:1.19.3")
+    
+    // JUnit Jupiter for TestContainers
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.1")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -33,4 +47,9 @@ java {
 application {
     // Define the main class for the application.
     mainClass = "org.example.App"
+}
+
+tasks.named<Test>("test") {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
 }
